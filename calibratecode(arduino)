@@ -1,0 +1,24 @@
+#include <Servo.h>
+
+const int servoPin = 9; // Pin connected to the servo
+
+Servo myServo;
+
+void setup() {
+  // Attach servo to its pin
+  myServo.attach(servoPin);
+}
+
+void loop() {
+  // Move the servo to position 180 degrees
+  myServo.write(180);
+
+  // Wait for 5 seconds
+  delay(5000);
+
+  // Move the servo back to the center position (90 degrees)
+  myServo.write(90);
+
+  // Wait for 10 second before repeating the loop us ethis to calibrate servo to stop(see calibration)
+  delay(10000);
+}
