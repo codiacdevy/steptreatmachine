@@ -1,0 +1,26 @@
+from sense_hat import SenseHat
+import time
+
+sense = SenseHat()
+
+steps = 0
+prev_x = prev_y = prev_z = 0
+
+while True:
+    accel = sense.get_accelerometer_raw()
+    x = accel['x']
+    y = accel['y']
+    z = accel['z']
+
+    # Calculate total acceleration
+    total_accel = abs(x + y + z - prev_x - prev_y - prev_z)
+
+    # If the total acceleration is above a certain threshold, consider it a step
+    if total_accel > 1.5:
+        steps += 1
+
+    sense.show_message(str(steps))  # Display step count on LED matrix
+
+    prev_x, prev_y, prev_z = x, y, z
+
+    time.sleep(0.1)  # Adjust sleep time as needed
