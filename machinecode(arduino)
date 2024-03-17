@@ -1,0 +1,68 @@
+#include <avr/wdt.h>
+#include <Servo.h>
+// Define the pin number for the button and servo
+const int buttonPin = 8;
+const int servoPin = 9;
+Servo myServo;
+
+// Variable to keep track of button state
+int buttonState = LOW;
+
+// Variable to keep track of the previous button state
+int prevButtonState = LOW;
+
+// Variable to store the time when the button was last pressed
+unsigned long lastDebounceTime = 0;
+
+// Debounce interval in milliseconds
+unsigned long debounceDelay = 50;
+
+void setup() {
+  // Initialize serial communication
+  Serial.begin(9600);
+  myServo.attach(servoPin);
+  
+  // Set button pin as input
+  pinMode(buttonPin, INPUT);
+
+  // Enable the watchdog timer with a timeout of 1 second
+  wdt_enable(WDTO_1S);
+}
+
+void loop() {
+  // Read the current state of the button
+  int reading = digitalRead(buttonPin);
+
+  // Check if the button state has changed
+  if (reading != prevButtonState) {
+    // Reset the debounce timer
+    lastDebounceTime = millis();
+  }
+
+  // Check if debounce time has elapsed
+  if ((millis() - lastDebounceTime) > debounceDelay) {
+    // If the button state has changed and remained stable for debounceDelay ms
+    if (reading != buttonState) {
+      buttonState = reading;
+
+      // If the button is pressed
+      if (buttonState == HIGH) {
+        // Send "hi" to the serial monitor
+        Serial.println("hi");
+        myServo.write(95);
+        delay(5000);
+        Serial.println("a");
+        myServo.write(90);
+        Serial.println("d");
+      
+
+      }
+    }
+  }
+
+  // Update the previous button state
+  prevButtonState = reading;
+
+  // "Kick" the watchdog timer to prevent it from resetting the Arduino
+  wdt_reset();
+}
